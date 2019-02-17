@@ -1,0 +1,32 @@
+Consider a worker $i$ and an opportunity at a firm $j$. Suppose there are $n$ firms, but worker $i$ not expressed complete preferences, $n_i < n$. Suppose there are $m$ workers in the compulsory market.
+
+The cosine similarity of two workers $i, i'$ when considering their preference vectors $P$, is
+\[S_{i, i'} = \frac{P_{i} \bullet P_{i'}}{||P_i|| ||P_{i'}||}\]
+
+Consider the following terms 
+\begin{align*}
+J &= \text{set of opportunities at firms in the market} \\
+|J| &= n \\
+P_i & \in \mathbb{Z}^{+, n \times 1} \\
+P_{ij} &= \begin{cases}
+p & p \in \mathbb{Z}^+ > 0, \text{expressed ordinal preference of worker $i$ for job $j$}\\
+0 & \text{worker $i$ has not expressed an ordinal preference for job $j$}
+\end{cases} \\
+J_i &= \{j : P_{ij} \neq 0\} \\
+|J_i| &= n_i \\
+J'_i &= J \setminus J_i \\
+|J'_i| &= n - n_i \\
+\end{align*}
+
+Our proposed implied ordinal preference system $P'_i$ is developed in the following manner. The metric $r$ is the similarity of the worker in question with another worker multiplied by the complement ordinal ranking of that worker (so that metric increases as similar workers more prefer the positions in question), summed across all workers. The metrics are then sorted in descending order. Ties are broken randomly. Then the ordinal ranking of these metrics are considered the implied ordinal preference for the for previously unexpressed preferences.
+
+\begin{align*}
+r_{ij} &= \sum_{i'}^{m-1}S_{i,i'} (m - P_{i',j}) \\
+R_i &= [r_{ij}: P_{ij} == 0] \\
+R_i[k] & \geq R_i[k+1] \\
+P'_i & \in \mathbb{Z}^{+, n \times 1} \\
+P'_{i,j} &= \begin{cases}
+p & p \in \mathbb{Z}^+ > 0, \text{ expressed ordinal preference of worker $i$ for job $j$}\\
+n_i + k & R_i[k] == r_{ij}, \text{ implied ordinal preference of worker $i$ for job $j$}
+\end{cases} \\
+\end{align*}
