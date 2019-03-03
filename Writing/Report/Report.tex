@@ -1,0 +1,120 @@
+\documentclass{article}
+\usepackage{cite}
+\usepackage{graphicx,fancyhdr,amsmath,amssymb,amsthm,subfig,url,hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{comment}
+\usepackage{framed} 
+\usepackage{indentfirst}
+\usepackage{appendix}
+\usepackage{bbm}
+\usepackage{algorithmic}
+\usepackage[ruled,vlined]{algorithm2e}
+%%Algorithm2e documentation
+% http://tug.ctan.org/macros/latex/contrib/algorithm2e/doc/algorithm2e.pdf
+%\usepackage{algorithm}
+\usepackage{courier}
+
+%%%%%%
+\SetKwProg{Fn}{Function}{}{}
+%%%%%%
+%----------------------- Macros and Definitions --------------------------
+
+%%% FILL THIS OUT
+\newcommand{\studentname}{Ian Shaw}
+\newcommand{\suid}{ieshaw}
+\newcommand{\exerciseset}{Class Notes}
+%%% END
+
+%\renewcommand{\theenumi}{\bf \Alph{enumi}}
+
+%\theoremstyle{plain}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}[theorem]{Lemma}
+
+\fancypagestyle{plain}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LO,RE]{\sffamily\bfseries\large Implied Ordinal Preferences}
+\fancyfoot[LO,RE]{\sffamily\bfseries\large ianedwardshaw (at) gmail.com}
+\fancyfoot[RO,LE]{\sffamily\bfseries\thepage}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+
+\graphicspath{{figures/}}
+
+%-------------------------------- Title ----------------------------------
+
+\title{Proposal: Implied Ordinal Preferences}
+\author{Ian Shaw \\ \texttt{ianedwardshaw@gmail.com}}
+
+%--------------------------------- Text ----------------------------------
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{Sections/Abstract.tex}
+\end{abstract}
+
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Formulation}
+
+\input{Sections/Formulation.tex}
+
+\subsection{Similarity Measures}
+
+\input{Sections/Similarity.tex}
+
+\section{Analysis}
+
+\subsection{Process}
+
+\input{Sections/Process.tex}
+
+\subsection{Data Sources}
+
+\input{Sections/Data.tex}
+
+\subsection{Results}
+
+Here would be a plot of how for each data set, with increasing dropout rates the proposed implied similarity process has a smaller RMSE than random preference assignment, though they monotonically increase with increasing proportional dropout.
+
+\section{Literature Review}
+
+\subsection{Completed Thus Far}
+
+\input{Sections/Lit_Rev}
+
+\subsection{Citations and Proposed Literature Review}
+
+Here we cite the literature thus far reviewed, and that which we intend to review. This list is not exhaustive as we know the review always grows throughout the investigation process. Any recommended literature will be enthusiastically added.
+
+\nocite{*}
+\bibliography{Sections/IOP}
+\bibliographystyle{plain}
+
+\section{Future Work}
+
+\input{Sections/Future_Work.tex}
+
+% \appendix
+% \appendixpage
+% \addappheadtotoc
+
+% \section{Implied Ordinal Preference Algorithm}
+
+% \input{Sections/Algo_IOP.tex}
+
+\end{document}
+
+
+
+
+
+
