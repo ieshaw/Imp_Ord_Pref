@@ -1,3 +1,7 @@
+# Keep Data off internet
+
+Data/
+
 # For Mac
 *.DS_Store
 
