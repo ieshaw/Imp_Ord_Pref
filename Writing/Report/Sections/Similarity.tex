@@ -1,0 +1,13 @@
+We explore three types of similarity measure in our investigation: cosine similarity, normed Euclidean distance, and weighted Euclidean distances
+
+Note that we use the complement of the ordinal preference, because having information up to the  $n^{th} - 1$ preference is equivalent to having the $n^{th}$ preference; we indicate having no preference information as a preference 0. Thus the most preferred choice is given a value of $n$. 
+
+The cosine similarity of two workers $i, i'$ when considering their preference vectors $P$, is
+\[S_{i, i'} = \frac{P^C_{i} \bullet P^C_{i'}}{||P^C_i|| ||P^C_{i'}||}\]
+
+Normed Euclidean distances is calculated as
+
+\[S_{i, i'} = 1- \frac{||P^C_i - P^C_{i'}||^2}{||P^C_i|| ||P^C_{i'}||}\]
+
+The two measures above are chosen due to their established usage. Below we propose what we call weighted Euclidean distance, intended to punish dissimilar preferences more if highly preferred by one of th workers. 
+\[S_{i, i'} = 1 - \frac{ 1}{2n(n-1)^2} \sum_{k=1}^{n} (P^S_{i,k} + P^S_{j,k})(P^S_{i,k} - P^S_{i',k})^2\]
