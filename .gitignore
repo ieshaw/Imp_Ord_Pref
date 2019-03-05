@@ -1,5 +1,7 @@
-# Keep Data off internet
+# Dont push enviroment
+iop/
 
+# Keep Data off internet
 Data/
 
 # For Mac
