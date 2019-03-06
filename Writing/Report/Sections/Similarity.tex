@@ -9,5 +9,5 @@ Normed Euclidean distances is calculated as
 
 \[S_{i, i'} = 1- \frac{||P^C_i - P^C_{i'}||^2}{||P^C_i|| ||P^C_{i'}||}\]
 
-The two measures above are chosen due to their established usage. Below we propose what we call weighted Euclidean distance, intended to punish dissimilar preferences more if highly preferred by one of th workers. 
-\[S_{i, i'} = 1 - \frac{ 1}{2n(n-1)^2} \sum_{k=1}^{n} (P^S_{i,k} + P^S_{j,k})(P^S_{i,k} - P^S_{i',k})^2\]
+The two measures above are chosen due to their established usage. Below we propose what we call weighted Euclidean distance, intended to punish dissimilar preferences more if highly preferred by one of the workers. 
+\[S_{i, i'} = \frac{1}{2m^4} \sum_{k=1}^{m} (P^S_{i,k} + P^S_{j,k})(P^S_{i,k} - P^S_{i',k})^2\]
