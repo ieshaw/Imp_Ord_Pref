@@ -70,15 +70,12 @@ def insert_complement(main_df, main_df_axis, compare_df, compare_df_axis):
     main_list = grab_list(main_df, main_df_axis)
     compare_list = grab_list(compare_df, compare_df_axis)
     complement = find_complement(main_list, compare_list)
-    print(complement)
-    print(len(complement))
-    print(main_df_axis)
     if len(complement) > 0:
+        print('Missing {} from {}s'.format(complement, main_df_axis))
         if main_df_axis == 'col':
             main_df[complement] = np.nan
         elif main_df_axis == 'row':
             new_df = pd.DataFrame(np.nan, index=complement, columns=main_df.columns)
-            print(new_df.head())
             main_df = main_df.append(new_df)
     return main_df
 
@@ -95,9 +92,9 @@ def deconflict(S_df, O_df):
     for main_axis in axis_list:
         for compare_axis in axis_list:
             if compare_axis != main_axis:
-                print('S_df')
+                print('Checking S_df {}s against O_df {}s'.format(main_axis, compare_axis))
                 S_df = insert_complement(S_df, main_axis, O_df, compare_axis)
-                print('O_df')
+                print('Checking O_df {}s against S_df {}s'.format(compare_axis, main_axis))
                 O_df = insert_complement(O_df, compare_axis, S_df, main_axis)
     return S_df, O_df
 
@@ -105,8 +102,8 @@ def main():
     data_dir = 'Data/med/raw/redacted_final_'
     s_file = 'officer.csv'
     o_file = 'command.csv'
-    output_dir = 'Data/clean/'
-    save_to_file = False
+    output_dir = 'Data/med/clean/'
+    save_to_file = True
     print_to_screen = True
     
     S_df = clean_s(data_dir + s_file)
