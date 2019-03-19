@@ -250,8 +250,8 @@ class iop:
         m,n = iop_df.shape
         return (m -iop_df)
 
-    #TODO: Complete Prefs function, given similarity type complete prefs
-    #TODO: RMSE Function, take another pref dataframe, output float
+    def complete_prefs(self,measure='cosine'):
+        return self.implied_prefs(self.score(self.similarity(measure=measure)))
 
     def __del__(self): 
         pass
