@@ -145,6 +145,15 @@ class Test_iop_class(unittest.TestCase):
         self.assertEqual(implied_df.at['J_2','S_5'],2)
         self.assertEqual(implied_df.at['J_3','S_5'],3)
 
+    def test_complte_prefs(self):
+        implied_df = self.small_iop.complete_prefs(measure='cosine')
+        self.assertEqual(implied_df.at['J_1','S_3'],3)
+        self.assertEqual(implied_df.at['J_3','S_3'],2)
+        self.assertEqual(implied_df.at['J_2','S_4'],2)
+        self.assertEqual(implied_df.at['J_3','S_4'],3)
+        self.assertEqual(implied_df.at['J_2','S_5'],2)
+        self.assertEqual(implied_df.at['J_3','S_5'],3)
+
     def test_dropout(self):
         test_iop = iop(self.small_iop.dropout(perc=0.50))
         self.assertTrue(test_iop.pref_coverage <= 0.5)
