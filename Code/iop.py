@@ -24,12 +24,13 @@ class iop:
                     '''.format(m,mn,mx))
         #Filter 0 indicating unexpressed preference, 1 means preference was expressed
         input_df.sort_index(axis=0).sort_index(axis=1, inplace=True)
-        iop.check_skipping_prefs(input_df)
+        iop.check_prefs(input_df)
         self.filter_df = input_df.mask(input_df !=0, 1)
         self.pref_coverage = (float(self.filter_df.sum().sum())/float(m*n))
         self.pref_df = input_df.copy(deep=True)
+        self.pref_df_c = (m - self.pref_df)*self.filter_df 
 
-    def check_skipping_prefs(input_df):
+    def check_prefs(input_df):
         '''
         input pref_df: Pandas DataFrame with row index slate options, column headers deciders
                 the entries are the preferences. Entry at row i, column j is the 
@@ -42,14 +43,17 @@ class iop:
             if sorted_prefs.max() == 0:
                 non_expressed.append(col)
                 continue
+            sorted_prefs = sorted_prefs[np.nonzero(sorted_prefs)]
+            #If only submitted one ranking, move on
+            if len(sorted_prefs) == 1 and sorted_prefs[0] == 1:
+                continue
             pref_diff = set(sorted_prefs[1:] - sorted_prefs[:-1])
-            pref_diff.add(0)
-            if set([0,1]) != pref_diff:
+            if set([1]) != pref_diff:
                 raise ValueError('''
                         {} did not express contiguous preferences.
-                        At least one preference is skipped.
+                        At least one preference is skipped or repeated.
                         Their sorted expressed preferences are:
-                        {}'''.format(col, sorted_prefs[np.nonzero(sorted_prefs)]))
+                        {}'''.format(col, sorted_prefs))
         if len(non_expressed) > 0:
             raise ValueError('{} did not express any preferences.'.format(non_expressed))
 
@@ -66,7 +70,7 @@ class iop:
         for i in df:
             for j in df:
                 if sim_df[i][j] == -1:
-                    denom = df[i].sum() + df[j].sum()
+                    denom = np.sqrt((df[i]**2).sum()) * np.sqrt((df[j]**2).sum())
                     if denom == 0:
                         s = 0
                     else:
@@ -96,11 +100,11 @@ class iop:
                 if i == j:
                     sim_df[i][i] = 1
                 elif sim_df[i][j] == -1:
-                    denom = (df[i]**2).sum() + (df[j]**2).sum()
+                    denom = float(np.sqrt((df[i]**2).sum())*np.sqrt((df[j]**2).sum()))
                     if denom == 0:
                         s = 0
                     else:
-                        s = 1 - (((df[i] - df[j])**2).sum())/denom
+                        s = 1 -np.sqrt(((df[i] - df[j])**2).sum())/denom
                     sim_df[i][j] = s
                     sim_df[j][i] = s
         sim_df.fillna(0, inplace=True)
@@ -154,11 +158,21 @@ class iop:
                     '''.format(mn))
         return sim_df
 
-    def score(pref_df,sim_df):
+    def similarity(self,measure='cosine'):
+        if measure == 'cosine':
+            return iop.sim_cosine(self.pref_df_c)
+        elif measure == 'euclidean':
+            return iop.sim_euclidean(self.pref_df_c)
+        elif measure == 'weighted_euclidean':
+            return iop.sim_weighted_euclidean(self.pref_df_c)
+        else:
+            raise ValueError(''''
+                Arg 'measure' must be one of the following:
+                    cosine , euclidean , weighted_euclidean.
+                    ''')
+            
+    def score(self,sim_df):
         '''
-        input pref_df: Pandas DataFrame with row index slate options, column headers deciders
-                the entries are the preferences. Entry at row i, column j is the 
-                complement ordinal preference ranking of decider j of slate option i
         input sim_df: Pandas DataFrame with row index slate options, column headers deciders
                 the entries are the preferences. Entry at row i, column j is the 
                 complement ordinal preference ranking of decider j of slate option i
@@ -167,30 +181,24 @@ class iop:
                 score  of decider j of slate option i
         '''
         # Higher score, means higher preference
-        score_matrix = np.matmul(pref_df.to_numpy(copy=True), sim_df.to_numpy(copy=True))
+        score_matrix = np.matmul(self.pref_df_c.to_numpy(copy=True), sim_df.to_numpy(copy=True))
         #Filter 1 indicating no score (due to no similarity with a person who ranked it), 0 otherwise
-        temp_score_df = pd.DataFrame(score_matrix, index=pref_df.index,columns=pref_df.columns)
+        temp_score_df = pd.DataFrame(score_matrix)
         filter_score_matrix = (1 - temp_score_df.mask(temp_score_df !=0, 1)).to_numpy(copy=True)
-        print("Missing Score Count: {}".format(filter_score_matrix.sum()))
         if filter_score_matrix.sum() > 0:
             random_matrix = np.random.uniform(0,1,size=score_matrix.shape)
             #If no score, randomly give a score between 0 and 1
             # add 2 to existing score matrix to ensure all scores above 
             # previously unscored
-            score_matrix += 2*(1 - filter_score_matrix) + random_matrix
-        #Filter 1 indicating unexpressed preference, 0 means preference was expressed
-        filter_matrix = (1 - pref_df.mask(pref_df !=0, 1)).to_numpy(copy=True)
-        #Make sure already known preferences have lowest score 0 so they aer below the 
+            score_matrix += 2*(1 - filter_score_matrix) + filter_score_matrix * random_matrix
+        #Make sure already known preferences have lowest score 0 so they are below the 
         # preferences we are trying to infer
-        score_matrix *= filter_matrix
-        return pd.DataFrame(score_matrix, index=pref_df.index,
-                        columns=pref_df.columns)
+        score_matrix *= (1 - self.filter_df.to_numpy(copy=True))
+        return pd.DataFrame(score_matrix, index=self.pref_df_c.index,
+                        columns=self.pref_df_c.columns)
 
-    def implied_prefs(pref_df, score_df):
+    def implied_prefs(self,score_df):
         '''
-        input pref_df: Pandas DataFrame with row index slate options, column headers deciders
-                the entries are the preferences. Entry at row i, column j is the 
-                complement ordinal preference ranking of decider j of slate option i
         input score_df: Pandas DataFrame with row index slate options, column headers deciders
                 the entries are the preferences. Entry at row i, column j is the 
                 score  of decider j of slate option i
@@ -198,10 +206,10 @@ class iop:
                 the entries are the preferences. Entry at row i, column j is the 
                 ordinal preference (true, implied, or random)  of decider j of slate option i
         '''
-        rank_df = score_df.rank(axis=0,ascending=True)
-        iop_df = pref_df + filter_df * (rank_df - (1 - filter_df).sum(axis=0))
+        rank_df = score_df.rank(axis=0,method='first',ascending=True)
+        iop_df = self.pref_df_c + (1 - self.filter_df) * (rank_df - 1 - self.filter_df.sum(axis=0))
         m,n = iop_df.shape
-        return (m+1 -iop_df)
+        return (m -iop_df)
 
     #TODO: Dropout Percentage Function; input percent dropout, return new iop class object
     #TODO: Complete Prefs function, given similarity type complete prefs

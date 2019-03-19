@@ -7,7 +7,7 @@ The cosine similarity of two workers $i, i'$ when considering their preference v
 
 Normed Euclidean distances is calculated as
 
-\[S_{i, i'} = 1- \frac{||P^C_i - P^C_{i'}||^2}{||P^C_i|| ||P^C_{i'}||}\]
+\[S_{i, i'} = 1- \frac{||P^C_i - P^C_{i'}||}{||P^C_i|| ||P^C_{i'}||}\]
 
 The two measures above are chosen due to their established usage. Below we propose what we call weighted Euclidean distance, intended to punish dissimilar preferences more if highly preferred by one of the workers. 
-\[S_{i, i'} = \frac{1}{2m^4} \sum_{k=1}^{m} (P^S_{i,k} + P^S_{j,k})(P^S_{i,k} - P^S_{i',k})^2\]
+\[S_{i, i'} = 1 - \frac{1}{2m^4} \sum_{k=1}^{m} (P^S_{i,k} + P^S_{j,k})(P^S_{i,k} - P^S_{i',k})^2\]
