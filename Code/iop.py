@@ -57,6 +57,45 @@ class iop:
         if len(non_expressed) > 0:
             raise ValueError('{} did not express any preferences.'.format(non_expressed))
 
+    def dropout(self,perc=0.5):
+        '''
+        input perc: float between 0 and 1, percent of expressed preferences
+        output: Pandas DataFrame with row index slate options, column headers deciders
+                the entries are the preferences. Entry at row i, column j is the 
+                complement ordinal preference ranking of decider j of slate option i
+                1 is best, m is worst, 0 for unexpressed preference, with
+                self.pref_coverage<= perc 
+        '''
+        m,n = self.pref_df.shape
+        drop_df = self.pref_df.copy(deep=True)
+        min_perc = float(1)/float(n)
+        if perc < min_perc or perc > self.pref_coverage:
+            raise ValueError('''
+                    Requested Percent of expressed preferences: {}
+                    Must be between the existing pref_coverage and
+                        at least 1 prefernece per columns.
+                        Between {} and {}.'''.format(
+                            perc,min_perc,self.pref_coverage))
+        drop_count = np.ceil(m*n*(self.pref_coverage - perc))
+        counter = 0
+        columns = list(drop_df.columns)
+        r = len(columns)
+        while counter < drop_count:
+            if r > 1:
+                col = columns[np.random.randint(0,r-1)]
+            else:
+                col = columns[0]
+            mx = drop_df[col].max()
+            if mx > 1: 
+                drop_df.at[drop_df[col].idxmax(),col] = 0
+                counter += 1
+            else:
+                columns.remove(col)
+                r = len(columns)
+            if r ==0:
+                break
+        return drop_df
+
     def sim_cosine(df):
         '''
         input: Pandas DataFrame with row index slate options, column headers deciders
@@ -211,7 +250,6 @@ class iop:
         m,n = iop_df.shape
         return (m -iop_df)
 
-    #TODO: Dropout Percentage Function; input percent dropout, return new iop class object
     #TODO: Complete Prefs function, given similarity type complete prefs
     #TODO: RMSE Function, take another pref dataframe, output float
 
