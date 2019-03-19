@@ -145,6 +145,18 @@ class Test_iop_class(unittest.TestCase):
         self.assertEqual(implied_df.at['J_2','S_5'],2)
         self.assertEqual(implied_df.at['J_3','S_5'],3)
 
+    def test_dropout(self):
+        test_iop = iop(self.small_iop.dropout(perc=0.50))
+        self.assertTrue(test_iop.pref_coverage <= 0.5)
+
+    def test_dropout_check_perc_lower(self):
+        with self.assertRaises(ValueError) as cm:
+            self.small_iop.dropout(perc=0.1)
+
+    def test_dropout_check_perc_higher(self):
+        with self.assertRaises(ValueError) as cm:
+            self.small_iop.dropout(perc=0.9)
+
     def test_destructor(self):
         test_iop = iop(self.input_df)
         self.assertTrue(test_iop.pref_coverage > 0)
