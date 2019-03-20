@@ -166,6 +166,13 @@ class Test_iop_class(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.small_iop.dropout(perc=0.9)
 
+    def test_rmse(self):
+        other_df = self.small_iop.pref_df.copy(deep=True)
+        other_df.at['J_1','S_1'] = 2
+        other_df.at['J_2','S_1'] = 1
+        self.assertEqual(round(self.small_iop.rmse(other_df),4),
+                round(np.sqrt(float(2)/float(9)),4))
+
     def test_destructor(self):
         test_iop = iop(self.input_df)
         self.assertTrue(test_iop.pref_coverage > 0)

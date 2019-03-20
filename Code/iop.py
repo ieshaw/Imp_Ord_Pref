@@ -204,10 +204,13 @@ class iop:
             return iop.sim_euclidean(self.pref_df_c)
         elif measure == 'weighted_euclidean':
             return iop.sim_weighted_euclidean(self.pref_df_c)
+        elif measure == 'random':
+            return pd.DataFrame(0,index=self.pref_df_c.columns,columns=self.pref_df_c.columns,
+                                dtype=float)
         else:
             raise ValueError(''''
                 Arg 'measure' must be one of the following:
-                    cosine , euclidean , weighted_euclidean.
+                    cosine , euclidean , weighted_euclidean, random.
                     ''')
             
     def score(self,sim_df):
@@ -252,6 +255,20 @@ class iop:
 
     def complete_prefs(self,measure='cosine'):
         return self.implied_prefs(self.score(self.similarity(measure=measure)))
+
+    def rmse(self,other_df):
+        '''
+        input pref_df: Pandas DataFrame with row index slate options, column headers deciders
+                the entries are the preferences. Entry at row i, column j is the 
+                complement ordinal preference ranking of decider j of slate option i
+                1 is best, m is worst 
+        output: float
+        '''
+        other_df.sort_index(axis=0).sort_index(axis=1, inplace=True)
+        iop.check_prefs(other_df)
+        squared_error =(((self.pref_df - other_df)*self.filter_df)**2).sum().sum()
+        total_prefs = self.filter_df.sum().sum()
+        return np.sqrt(float(squared_error)/float(total_prefs))
 
     def __del__(self): 
         pass
