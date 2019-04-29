@@ -18,7 +18,7 @@ J_i &= \{j : P_{ij} \neq 0\} \\
 |J_i| &= n_i \\
 J'_i &= J \setminus J_i \\
 |J'_i| &= n - n_i \\
-S_{i, i'} = \text{similarity of worker $i$ and $i'$}
+S_{i, i'} &= \text{similarity of worker $i$ and $i'$}
 \end{align*}
 
 Our proposed implied ordinal preference system $P'_i$ is developed in the following manner. The metric $r$ is the similarity of the worker in question with another worker multiplied by the complement ordinal ranking of that worker (so that metric increases as similar workers more prefer the positions in question), summed across all workers. The metrics are then sorted in descending order. Ties are broken randomly. Then the ordinal ranking of these metrics are considered the implied ordinal preference for the for previously unexpressed preferences.
