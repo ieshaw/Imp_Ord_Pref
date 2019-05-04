@@ -42,16 +42,16 @@ def alter_df(exp_iop,df):
 def plot_df(num_exp,exp_df):
     exp_plt = exp_df.plot(x='perc_dropout', 
                         y=['cosine','euclidean','weighted_euclidean','random'])
+    exp_plt.set_xlabel('Percent Dropout')
+    exp_plt.set_ylabel('RMSE')
     return exp_plt
-    #TODO: Caption original coverage, and num experiments
-    #TODO: X axis percent dropout and percent coverage
 
 def main():
     df,output_dir,experiment_dir = grab_input()
     exp_df,num_exp = agg_exps(experiment_dir)
     exp_iop = iop(df)
     exp_df = alter_df(exp_iop,exp_df)
-    print(exp_df)
+    exp_df.to_csv(output_dir + 'results.csv', header=True, index=True)
     exp_plt = plot_df(num_exp,exp_df)
     fig = exp_plt.get_figure()
     fig.savefig(output_dir + 'results.png')
