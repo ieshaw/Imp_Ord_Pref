@@ -1,6 +1,11 @@
-To prove the efficacy of this method, we use ordinal preference datasets that already exist, randomly dropout certain preferences, then determine how well our method predicates the artificially-unexpressed preferences. With all our datasets we run this experiment 100 times each with 20 different percentage levels of dropout. 
+To prove the efficacy of this method, we use ordinal preference datasets that already exist, randomly dropout certain preferences, then determine how well our method predicates the artificially-unexpressed preferences. With all our datasets we run this experiment 100 times,  each with 20 different percentage levels of dropout. 
 
-Consider the US Navy Cryptologic Warfare Officer dataset. Each experiment starts out with randomly selecting XX preferences in order to get below a XX\% completeness.To randomly dropout a preference, we randomly select a column, then remove the highest preference. If there is only one preference left in that column, we leave it and randomly select another column. 
-We then run our method on all the similarity measures and a random (for baseline) to predict what the XX dropped out preferences are. Then we take the root mean square error of these predicted preferences with what we know to be the true preference count. 
-The next dropout level is XX\%, so we dropout an additional XX preferences and repeat the process. 
+Consider the US Navy Cryptologic Warfare Officer dataset. There was 100\% participation (complete preference coverage), with 28 participants and 19 options for a total of 532 preferences.  Each experiment starts out with randomly removing 26 preferences in order to artificially drop the completeness to 95\%. 
+
+To randomly dropout a preference, we randomly select a column, then remove the highest preference. If there is only one preference left in that column, we leave it and randomly select another column. 
+
+We then run our method on both similarity measures and random guessing (for baseline) to predict what the 26 dropped out preferences are. Then we take the root mean square error (RMSE) of these predicted preferences with what we know to be the true preference count. 
+
+The next dropout level is 90\%, so we remove an additional 26 preferences and attempt to predict the 52 preferences that were dropped out. Then repeat the process every 5\%. 
+
 This whole process is done 20 times for the 20 different dropout levels. The process then restarts, running 99 more times to accumulate 100 experiments. 

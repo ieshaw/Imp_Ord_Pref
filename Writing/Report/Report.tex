@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{cite}
-\usepackage{graphicx,fancyhdr,amsmath,amssymb,amsthm,subfig,url,hyperref}
+\usepackage{graphicx,fancyhdr,amsmath,amssymb,amsthm,url,hyperref}
+\usepackage{subcaption}
 \usepackage[margin=1in]{geometry}
 \usepackage{comment}
 \usepackage{framed} 
@@ -54,6 +55,7 @@
 
 \begin{abstract}
 \input{Sections/Abstract.tex}
+\footnote{The code and data can be found at this github repository. \url{https://github.com/ieshaw/Imp_Ord_Pref}}
 \end{abstract}
 
 
@@ -62,6 +64,10 @@
 \tableofcontents
 
 \newpage
+
+\section{Inspiration}
+
+\input{Sections/Lit_Rev}
 
 \section{Formulation}
 
@@ -99,27 +105,11 @@
 
 \input{Sections/Future_Work.tex}
 
-\section{Literature Review}
 
-\subsection{Completed Thus Far}
-
-\input{Sections/Lit_Rev}
-
-\nocite{*}
+%\nocite{*}
 \bibliography{Sections/IOP}
 \bibliographystyle{plain}
 
-\section{Future Work}
-
-\input{Sections/Future_Work.tex}
-
-% \appendix
-% \appendixpage
-% \addappheadtotoc
-
-% \section{Implied Ordinal Preference Algorithm}
-
-% \input{Sections/Algo_IOP.tex}
 
 \end{document}
 
